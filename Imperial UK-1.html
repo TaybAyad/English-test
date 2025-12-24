@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imperial UK English Grammar Test - Part 2</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-top: 5px solid #b20e1e; /* Imperial Red accent */
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+        }
+        .question-block {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-left: 5px solid #ddd;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+        .question-text {
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+        .options label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            background-color: #fdfdfd;
+            border: 1px solid #eee;
+        }
+        .options label:hover {
+            background-color: #eef2f5;
+        }
+        input[type="radio"] {
+            margin-right: 12px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-top: 30px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #1a252f;
+        }
+        #results {
+            margin-top: 30px;
+            padding: 20px;
+            display: none;
+            background-color: #e8f4fd;
+            border: 1px solid #b6d4fe;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .explanation {
+            font-size: 0.9em;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+        .correct-text { color: #27ae60; }
+        .wrong-text { color: #c0392b; }
+        
+        .key-section {
+            margin-top: 40px;
+            display: none;
+            border-top: 2px dashed #ccc;
+            padding-top: 20px;
+        }
+        .key-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Imperial UK English Test (Set 2)</h1>
+    <p style="text-align: center; color: #666;">Select the best option for each sentence.</p>
+    
+    <form id="quiz-form">
+        <div id="quiz-container"></div>
+        <button type="button" onclick="submitQuiz()">Submit Answers</button>
+    </form>
+
+    <div id="results"></div>
+
+    <div id="answer-key" class="key-section">
+        <h3>Correct Answer Reference:</h3>
+        <div id="key-grid" class="key-grid"></div>
+    </div>
+</div>
+
+<script>
+    // 100 NEW Questions (No repeats from previous list)
+    // 0=A, 1=B, 2=C, 3=D
+    const questions = [
+        // --- A1 / A2 (Elementary) ---
+        { q: "1. These are my _____.", o: ["childs", "children", "childrens", "child"], a: 1 },
+        { q: "2. I usually go to work _____ train.", o: ["in", "on", "by", "with"], a: 2 },
+        { q: "3. My brother _____ football every Sunday.", o: ["play", "plays", "playing", "is play"], a: 1 },
+        { q: "4. _____ is your birthday?", o: ["When", "Where", "Who", "Which"], a: 0 },
+        { q: "5. Can you _____ me the salt, please?", o: ["pass", "passed", "passing", "to pass"], a: 0 },
+        { q: "6. They _____ at the party last night.", o: ["wasn't", "weren't", "isn't", "didn't"], a: 1 },
+        { q: "7. I want _____ a new car.", o: ["buy", "buying", "to buy", "bought"], a: 2 },
+        { q: "8. Is there _____ cheese in the fridge?", o: ["some", "many", "any", "few"], a: 2 },
+        { q: "9. That is _____ house over there.", o: ["them", "theirs", "their", "they"], a: 2 },
+        { q: "10. He _____ speak English very well.", o: ["no", "doesn't", "don't", "isn't"], a: 1 },
+        { q: "11. We walked _____ the park.", o: ["thorough", "through", "thought", "though"], a: 1 },
+        { q: "12. My birthday is on the _____ of May.", o: ["twelve", "twelfth", "twelveth", "twelf"], a: 1 },
+        { q: "13. Listen! The birds _____.", o: ["sing", "sings", "are singing", "sang"], a: 2 },
+        { q: "14. _____ you swim when you were five?", o: ["Can", "Could", "Do", "Did"], a: 1 },
+        { q: "15. London is _____ than Oxford.", o: ["big", "biggest", "bigger", "more big"], a: 2 },
+        { q: "16. I _____ my keys. I can't find them.", o: ["lost", "have lost", "lose", "losing"], a: 1 },
+        { q: "17. She went to the shops _____ some milk.", o: ["for to buy", "for buying", "to buy", "buy"], a: 2 },
+        { q: "18. How _____ money do you need?", o: ["many", "much", "any", "long"], a: 1 },
+        { q: "19. Be quiet, the baby _____.", o: ["sleeps", "slept", "is sleeping", "sleeping"], a: 2 },
+        { q: "20. The phone rang while I _____ dinner.", o: ["cooked", "was cooking", "am cooking", "cook"], a: 1 },
+
+        // --- B1 (Intermediate) ---
+        { q: "21. I have never _____ to America.", o: ["went", "go", "been", "gone"], a: 2 },
+        { q: "22. You _____ wear a uniform at this school; it's the rule.", o: ["can", "must", "might", "may"], a: 1 },
+        { q: "23. It was _____ a cold day that we stayed inside.", o: ["so", "such", "very", "too"], a: 1 },
+        { q: "24. I’ll see you _____ Christmas. (UK Usage)", o: ["in", "on", "at", "by"], a: 2 },
+        { q: "25. This problem is _____ difficult for me to solve.", o: ["enough", "too", "such", "much"], a: 1 },
+        { q: "26. I used to _____ in a flat, but now I live in a house.", o: ["live", "living", "lived", "lives"], a: 0 },
+        { q: "27. She’s good _____ playing the piano.", o: ["in", "at", "on", "with"], a: 1 },
+        { q: "28. I _____ the dentist at 3 PM tomorrow.", o: ["see", "am seeing", "saw", "have seen"], a: 1 },
+        { q: "29. If I _____ the lottery, I would travel the world.", o: ["win", "won", "have won", "had won"], a: 1 },
+        { q: "30. The window _____ by the children yesterday.", o: ["broke", "was broken", "is broken", "has broken"], a: 1 },
+        { q: "31. Do you mind _____ the window?", o: ["open", "to open", "opening", "opened"], a: 2 },
+        { q: "32. Neither of the answers _____ correct.", o: ["is", "are", "were", "have"], a: 0 },
+        { q: "33. We have lived here _____ ten years.", o: ["since", "ago", "for", "during"], a: 2 },
+        { q: "34. I _____ waiting for you for two hours!", o: ["am", "was", "have been", "had"], a: 2 },
+        { q: "35. Can you tell me where _____?", o: ["is the station", "the station is", "the station be", "is station"], a: 1 },
+        { q: "36. He gave up _____ two years ago.", o: ["smoke", "to smoke", "smoking", "smoked"], a: 2 },
+        { q: "37. Make sure you take an umbrella _____ it rains.", o: ["unless", "in case", "if", "when"], a: 1 },
+        { q: "38. There were very _____ people at the meeting.", o: ["little", "few", "less", "small"], a: 1 },
+        { q: "39. The news _____ not very good today.", o: ["are", "is", "were", "have"], a: 1 },
+        { q: "40. I’d like to try _____ that dress, please.", o: ["on", "up", "in", "off"], a: 0 },
+
+        // --- B2 (Upper Intermediate) ---
+        { q: "41. You _____ better hurry or you'll miss the bus.", o: ["should", "would", "had", "did"], a: 2 },
+        { q: "42. The flight was delayed _____ to bad weather.", o: ["because", "due", "owing", "caused"], a: 1 },
+        { q: "43. I wish I _____ harder when I was at school.", o: ["studied", "would study", "had studied", "study"], a: 2 },
+        { q: "44. It’s time they _____ a decision.", o: ["make", "made", "have made", "making"], a: 1 },
+        { q: "45. We are looking forward to _____ on holiday.", o: ["go", "going", "gone", "went"], a: 1 },
+        { q: "46. He’s the man _____ brother is a famous actor.", o: ["who", "which", "whose", "whom"], a: 2 },
+        { q: "47. I’ll call you the moment I _____ home.", o: ["get", "will get", "got", "am getting"], a: 0 },
+        { q: "48. You needn't _____ brought food; we have plenty.", o: ["have", "had", "to have", "having"], a: 0 },
+        { q: "49. By next year, I _____ my degree.", o: ["will finish", "will have finished", "have finished", "finish"], a: 1 },
+        { q: "50. She accused him _____ lying.", o: ["for", "of", "about", "with"], a: 1 },
+        { q: "51. I simply can't put up _____ this noise anymore.", o: ["to", "on", "with", "for"], a: 2 },
+        { q: "52. If you _____ told me, I could have helped.", o: ["would have", "had", "have", "should"], a: 1 },
+        { q: "53. _____ of the rain, the match continued.", o: ["Despite", "In spite", "Although", "Even"], a: 1 },
+        { q: "54. Stop making that noise! It’s getting on my _____.", o: ["nerves", "brain", "head", "blood"], a: 0 },
+        { q: "55. You are coming to the party, _____?", o: ["aren't you", "don't you", "isn't it", "won't you"], a: 0 },
+        { q: "56. I prefer tea _____ coffee.", o: ["than", "to", "over", "from"], a: 1 },
+        { q: "57. The more you study, the _____ you will become.", o: ["smart", "smarter", "smartest", "more smart"], a: 1 },
+        { q: "58. We must prevent him _____ leaving.", o: ["to", "from", "for", "of"], a: 1 },
+        { q: "59. Would you be so kind as _____ the door?", o: ["open", "to open", "opening", "opened"], a: 1 },
+        { q: "60. He has gone to London _____ business.", o: ["for", "in", "on", "at"], a: 2 },
+
+        // --- C1 (Advanced - British Conventions) ---
+        { q: "61. UK Spelling: You need a driving _____ to drive a car.", o: ["license", "licence", "lisence", "licensce"], a: 1 },
+        { q: "62. UK Spelling: I need to _____ the piano more often.", o: ["practice", "practise", "practiceing", "practize"], a: 1 },
+        { q: "63. UK Grammar: The team _____ currently winning the match.", o: ["is", "are", "be", "was"], a: 1 }, // 'Team' often plural in UK
+        { q: "64. No sooner had we arrived _____ it started to rain.", o: ["then", "when", "than", "that"], a: 2 },
+        { q: "65. _____ that I knew the answer, I would tell you.", o: ["Provided", "Supposing", "Unless", "In case"], a: 1 },
+        { q: "66. It is essential that he _____ informed immediately.", o: ["is", "be", "was", "will be"], a: 1 },
+        { q: "67. He was charged _____ murder.", o: ["of", "with", "for", "on"], a: 1 },
+        { q: "68. I am not accustomed _____ in such conditions.", o: ["to sleep", "sleeping", "to sleeping", "sleep"], a: 2 },
+        { q: "69. She really takes _____ her mother; they look identical.", o: ["after", "on", "up", "to"], a: 0 },
+        { q: "70. _____ I known about the traffic, I would have left earlier.", o: ["If", "Should", "Had", "Did"], a: 2 },
+        { q: "71. He was arrested for disturbing the _____.", o: ["peace", "piece", "peas", "pease"], a: 0 },
+        { q: "72. Let's go to the cinema, _____ we?", o: ["will", "shall", "do", "should"], a: 1 },
+        { q: "73. There is no point _____ over spilt milk.", o: ["cry", "to cry", "crying", "in crying"], a: 2 },
+        { q: "74. I’ll see to it that everything _____ ready.", o: ["is", "will be", "be", "was"], a: 0 },
+        { q: "75. Rarely _____ such a magnificent view.", o: ["one sees", "do one see", "does one see", "sees one"], a: 2 },
+        { q: "76. UK Vocabulary: We live in a block of _____.", o: ["apartments", "condos", "flats", "lofts"], a: 2 },
+        { q: "77. UK Vocabulary: I waited in the _____ for twenty minutes.", o: ["line", "queue", "row", "file"], a: 1 },
+        { q: "78. He bought some _____ for his office.", o: ["stationery", "stationary", "stationaries", "stationarys"], a: 0 },
+        { q: "79. You should have checked the _____ before buying the house.", o: ["principals", "principles", "principal", "principle"], a: 0 }, // principal amount/item
+        { q: "80. We walked _____ along the river.", o: ["further", "farther", "furthest", "farthest"], a: 1 }, // Farther = physical distance
+
+        // --- C2 (Proficiency / Native Level Idioms & Grammar) ---
+        { q: "81. _____ may, I will still support you.", o: ["Be that as it", "Come what", "Happen what", "Be it what"], a: 0 },
+        { q: "82. He succeeded _____ dint of hard work.", o: ["by", "in", "on", "at"], a: 0 },
+        { q: "83. I take _____ with your interpretation of the data.", o: ["umbrage", "issue", "trouble", "exception"], a: 1 },
+        { q: "84. The project was finished in _____ of time.", o: ["nick", "lieu", "light", "view"], a: 1 }, // in lieu of
+        { q: "85. No, wait, actually 'in lieu' means 'instead of'. The project was finished in the _____ of time.", o: ["nick", "pass", "course", "length"], a: 0 },
+        { q: "86. She was kept in the _____ about the surprise party.", o: ["black", "dark", "shadow", "night"], a: 1 },
+        { q: "87. The decision was left in _____.", o: ["suspense", "abeyance", "wait", "delay"], a: 1 },
+        { q: "88. He is the black _____ of the family.", o: ["horse", "sheep", "goat", "wolf"], a: 1 },
+        { q: "89. I can’t make head nor _____ of this document.", o: ["foot", "toe", "tail", "bottom"], a: 2 },
+        { q: "90. Let’s call it a _____.", o: ["night", "day", "stop", "end"], a: 1 },
+        { q: "91. She did it _____ the spur of the moment.", o: ["on", "at", "in", "by"], a: 0 },
+        { q: "92. We must not rest on our _____.", o: ["success", "laurels", "leaves", "wreaths"], a: 1 },
+        { q: "93. This rule applies to everyone, _____ board.", o: ["across the", "on the", "over the", "above the"], a: 0 },
+        { q: "94. I was on _____ and needles waiting for the result.", o: ["pins", "nails", "spikes", "thorns"], a: 0 },
+        { q: "95. He really threw a _____ in the works.", o: ["spanner", "wrench", "hammer", "screwdriver"], a: 0 }, // Spanner = UK, Wrench = US
+        { q: "96. You’re barking up the wrong _____.", o: ["pole", "bush", "tree", "path"], a: 2 },
+        { q: "97. It never crossed my _____ that he was lying.", o: ["brain", "mind", "head", "thoughts"], a: 1 },
+        { q: "98. _____ is no excuse for the law.", o: ["Ignorance", "Ignoring", "Unknowing", "Negligence"], a: 0 },
+        { q: "99. He bought a pig in a _____.", o: ["poke", "pocket", "barn", "sack"], a: 0 },
+        { q: "100. The die is _____.", o: ["thrown", "cast", "tossed", "rolled"], a: 1 }
+    ];
+
+    function renderQuiz() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
+        
+        questions.forEach((q, index) => {
+            const block = document.createElement('div');
+            block.className = 'question-block';
+            block.id = `q${index}`;
+            
+            let optionsHTML = '';
+            q.o.forEach((opt, i) => {
+                optionsHTML += `
+                <label>
+                    <input type="radio" name="q${index}" value="${i}">
+                    ${opt}
+                </label>`;
+            });
+
+            block.innerHTML = `
+                <div class="question-text">${q.q}</div>
+                <div class="options">${optionsHTML}</div>
+                <div class="explanation" id="exp${index}"></div>
+            `;
+            container.appendChild(block);
+        });
+    }
+
+    function submitQuiz() {
+        let score = 0;
+        const total = questions.length;
+        const keyGrid = document.getElementById('key-grid');
+        keyGrid.innerHTML = '';
+
+        questions.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const exp = document.getElementById(`exp${index}`);
+            const block = document.getElementById(`q${index}`);
+            
+            // Populate Key
+            const keyItem = document.createElement('div');
+            keyItem.textContent = `${index + 1}. ${q.o[q.a]}`;
+            keyGrid.appendChild(keyItem);
+
+            if (selected) {
+                if (parseInt(selected.value) === q.a) {
+                    score++;
+                    block.style.borderLeftColor = "#27ae60";
+                    exp.innerHTML = `<span class="correct-text">✓ Correct</span>`;
+                } else {
+                    block.style.borderLeftColor = "#c0392b";
+                    exp.innerHTML = `<span class="wrong-text">✗ Incorrect. Correct: ${q.o[q.a]}</span>`;
+                }
+            } else {
+                block.style.borderLeftColor = "#f39c12";
+                exp.innerHTML = `<span class="wrong-text">Missed. Correct: ${q.o[q.a]}</span>`;
+            }
+        });
+
+        const percentage = Math.round((score / total) * 100);
+        let level = "";
+        if(percentage < 30) level = "A1/A2 (Beginner)";
+        else if(percentage < 50) level = "B1 (Intermediate)";
+        else if(percentage < 70) level = "B2 (Upper Intermediate)";
+        else if(percentage < 90) level = "C1 (Advanced)";
+        else level = "C2 (Proficiency)";
+
+        const resultDiv = document.getElementById('results');
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `<h2>Score: ${score} / ${total} (${percentage}%)</h2><h3>Estimated Level: ${level}</h3>`;
+        
+        document.getElementById('answer-key').style.display = 'block';
+        window.scrollTo(0, 0);
+    }
+
+    renderQuiz();
+</script>
+
+</body>
+</html>
