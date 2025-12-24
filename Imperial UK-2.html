@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imperial UK English: Advanced Proficiency Challenge</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif; /* Serif font for a more academic feel */
+            background-color: #fcfcfc;
+            color: #222;
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 50px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border-top: 6px solid #00693e; /* Imperial/Dartmouth Green */
+        }
+        h1 {
+            color: #00693e;
+            text-align: center;
+            font-family: 'Segoe UI', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #00693e;
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+        .question-block {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #f9fdfa;
+            border-left: 4px solid #ccc;
+            page-break-inside: avoid;
+        }
+        .question-text {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .options label {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.95em;
+        }
+        .options label:hover {
+            background-color: #eef7f2;
+            border-color: #00693e;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background-color: #00693e;
+            color: white;
+            border: none;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 40px;
+            letter-spacing: 1px;
+            transition: opacity 0.3s;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        #results {
+            margin-top: 40px;
+            padding: 25px;
+            display: none;
+            background-color: #fff;
+            border: 2px solid #222;
+        }
+        .feedback {
+            font-size: 0.9em;
+            margin-top: 8px;
+            font-style: italic;
+        }
+        .correct { color: #00693e; font-weight: bold; }
+        .wrong { color: #b00; text-decoration: line-through; }
+        .correct-ref { color: #00693e; }
+        
+        .answer-key-display {
+            display: none;
+            margin-top: 50px;
+            column-count: 2;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Advanced Proficiency & Syntax</h1>
+    <p style="text-align: center; margin-bottom: 30px;">
+        <em>Includes Double Blanks, Inversions, Cleft Sentences, and Idiomatic Nuances.</em>
+    </p>
+    
+    <form id="quiz-form">
+        <div id="quiz-container"></div>
+        <button type="button" onclick="submitQuiz()">Submit Final Assessment</button>
+    </form>
+
+    <div id="results"></div>
+    <div id="final-key" class="answer-key-display"></div>
+</div>
+
+<script>
+    // 100 NEW, High-Level Questions (Single and Double Blanks)
+    // 0=A, 1=B, 2=C, 3=D
+    const questions = [
+        // --- SECTION 1: Double Blanks & Logic (Complex) ---
+        { q: "1. Not only _____ late, but he _____ forgot the tickets.", o: ["was he / also", "he was / too", "was he / as well", "he was / also"], a: 0 },
+        { q: "2. _____ had I entered the room _____ the phone began to ring.", o: ["Hardly / when", "No sooner / when", "Scarcely / than", "Hardly / than"], a: 0 },
+        { q: "3. The report was _____ critical, yet it _____ to offer any solutions.", o: ["highly / failed", "deeply / succeeded", "very / missed", "completely / avoided"], a: 0 },
+        { q: "4. _____ my objections, they decided to _____ with the plan.", o: ["Despite / proceed", "Although / go", "In spite / process", "Even / continue"], a: 0 },
+        { q: "5. He is _____ by nature, rarely _____ his true feelings.", o: ["gregarious / showing", "taciturn / revealing", "loquacious / hiding", "reticent / concealing"], a: 1 },
+        { q: "6. I would sooner you _____ it now rather than _____ until later.", o: ["do / waiting", "did / wait", "done / waited", "did / waiting"], a: 1 },
+        { q: "7. _____ determining the cost, we must _____ the quality.", o: ["Beside / access", "Besides / assess", "Beside / assess", "Besides / access"], a: 1 },
+        { q: "8. The lecture was _____ boring that I found myself _____ off.", o: ["so / dozing", "such / dozing", "too / nodding", "very / sleeping"], a: 0 },
+        { q: "9. Neither the manager _____ his assistants _____ available.", o: ["or / is", "nor / are", "nor / is", "or / are"], a: 1 },
+        { q: "10. _____ strictly speaking it is legal, it is morally _____.", o: ["While / dubious", "Since / correct", "Because / right", "When / wrong"], a: 0 },
+        { q: "11. She was _____ the verge of tears _____ she heard the news.", o: ["at / when", "on / when", "in / while", "to / as"], a: 1 },
+        { q: "12. It is _____ unlikely that he will _____ to our demands.", o: ["highly / accede", "deeply / concede", "hugely / agree", "greatly / accept"], a: 0 },
+        { q: "13. _____ for his lack of experience, he _____ have got the job.", o: ["But / would", "Except / will", "Had / wouldn't", "If / should"], a: 0 },
+        { q: "14. Generally _____, men are stronger than women, but this is a sweeping _____.", o: ["talking / statement", "speaking / generalisation", "saying / fact", "telling / truth"], a: 1 },
+        { q: "15. I can't _____ the difference _____ butter and margarine.", o: ["say / with", "tell / between", "speak / among", "see / of"], a: 1 },
+        { q: "16. The company is _____ to _____ bankruptcy.", o: ["rumoured / face", "said / facing", "thought / be", "believed / having"], a: 0 },
+        { q: "17. _____ having a broken leg, he managed to _____ the summit.", o: ["Although / reach", "Despite / reach", "However / arrive", "Even / get"], a: 1 },
+        { q: "18. No sooner _____ the match started _____ it began to hail.", o: ["had / than", "did / then", "was / when", "has / that"], a: 0 },
+        { q: "19. The _____ reason for the delay was the _____ weather.", o: ["principle / adverse", "principal / adverse", "principal / averse", "principle / averse"], a: 1 },
+        { q: "20. I _____ have told him the truth, but I _____ want to hurt his feelings.", o: ["must / didn't", "should / didn't", "could / didn't", "may / don't"], a: 2 },
+
+        // --- SECTION 2: Advanced Grammar & Inversions ---
+        { q: "21. Little _____ she realise the consequences of her actions.", o: ["did", "does", "has", "had"], a: 0 },
+        { q: "22. Only by working hard _____ succeed.", o: ["you will", "will you", "you can", "can you to"], a: 1 },
+        { q: "23. Under no circumstances _____ this door be left unlocked.", o: ["should", "must", "can", "will"], a: 0 },
+        { q: "24. Such _____ the force of the storm that trees were uprooted.", o: ["was", "is", "were", "had"], a: 0 },
+        { q: "25. Were it not for your help, I _____ failed.", o: ["will have", "would have", "had", "have"], a: 1 },
+        { q: "26. Had I known you were coming, I _____ a cake.", o: ["would bake", "baked", "would have baked", "had baked"], a: 2 },
+        { q: "27. Should you see him, _____ tell him to call me?", o: ["would you", "could you", "do you", "will you"], a: 1 },
+        { q: "28. Rarely _____ such a display of incompetence.", o: ["have I seen", "I have seen", "saw I", "I saw"], a: 0 },
+        { q: "29. Not until the end of the film _____ who the killer was.", o: ["did I know", "I knew", "do I know", "I had known"], a: 0 },
+        { q: "30. Nowhere _____ find a better example of this architecture.", o: ["you will", "will you", "you can", "can you"], a: 1 },
+        { q: "31. Try _____ he might, he couldn't lift the heavy box.", o: ["as", "like", "so", "though"], a: 0 },
+        { q: "32. Much _____ I respect him, I cannot agree with his methods.", o: ["as", "like", "so", "though"], a: 0 },
+        { q: "33. Strange _____ it may seem, I actually enjoyed the exam.", o: ["as", "like", "so", "although"], a: 0 },
+        { q: "34. Be that as it _____, we must continue.", o: ["may", "might", "can", "could"], a: 0 },
+        { q: "35. Come what _____, we will finish this project.", o: ["may", "might", "can", "will"], a: 0 },
+        { q: "36. Suffice it to _____, we were not impressed.", o: ["say", "tell", "speak", "state"], a: 0 },
+        { q: "37. God _____ the Queen! (Subjunctive)", o: ["saves", "save", "saving", "saved"], a: 1 },
+        { q: "38. It is imperative that he _____ immediately.", o: ["leaves", "leave", "left", "leaving"], a: 1 },
+        { q: "39. I suggest that she _____ a doctor.", o: ["sees", "see", "saw", "seeing"], a: 1 },
+        { q: "40. If need _____, I will do it myself.", o: ["be", "is", "was", "were"], a: 0 },
+
+        // --- SECTION 3: High-Level Vocabulary & Collocations ---
+        { q: "41. The jury reached a _____ verdict.", o: ["unanimous", "united", "single", "agreed"], a: 0 },
+        { q: "42. He has a _____ knowledge of history.", o: ["profound", "deep", "heavy", "strong"], a: 0 },
+        { q: "43. The evidence was _____.", o: ["inconclusive", "undecided", "unfinished", "incomplete"], a: 0 },
+        { q: "44. She offered a _____ apology.", o: ["profuse", "plentiful", "rich", "wealthy"], a: 0 },
+        { q: "45. It was a _____ error of judgement.", o: ["heinous", "grave", "tall", "deep"], a: 1 },
+        { q: "46. He has a _____ appetite for reading.", o: ["voracious", "hungry", "thirsty", "starving"], a: 0 },
+        { q: "47. The noise was _____.", o: ["deafening", "blinding", "numbing", "shocking"], a: 0 },
+        { q: "48. She is a _____ opponent of the plan.", o: ["staunch", "stiff", "strong", "hard"], a: 0 },
+        { q: "49. He made a _____ recovery.", o: ["miraculous", "magic", "wonder", "marvel"], a: 0 },
+        { q: "50. It was a _____ coincidence.", o: ["mere", "sheer", "pure", "clear"], a: 0 },
+        { q: "51. I have a _____ suspicion that he is lying.", o: ["sneaking", "creeping", "crawling", "hiding"], a: 0 },
+        { q: "52. She bears a _____ resemblance to her mother.", o: ["striking", "hitting", "beating", "punching"], a: 0 },
+        { q: "53. He is a _____ liar.", o: ["compulsive", "compulsory", "compelled", "compelling"], a: 0 },
+        { q: "54. We need to _____ a compromise.", o: ["reach", "get", "make", "do"], a: 0 },
+        { q: "55. They _____ a grudge against him.", o: ["bear", "carry", "hold", "keep"], a: 0 },
+        { q: "56. He _____ the question.", o: ["begged", "asked", "posed", "raised"], a: 0 }, // Beg the question = logical fallacy, but often used as 'raises'. In C2 test 'posed' or 'raised' is safer, but 'begged' is the fixed phrase for the fallacy. Let's go with 'posed' for 'asked'. Wait, 'beg the question' is a specific idiom. Let's use 'raised'.
+        // Correction: Let's use a standard collocation.
+        { q: "56. He _____ serious doubts about the project.", o: ["raised", "rose", "arose", "lifted"], a: 0 },
+        { q: "57. She _____ offense at his remarks.", o: ["took", "made", "got", "had"], a: 0 },
+        { q: "58. He _____ a blind eye to the corruption.", o: ["turned", "closed", "shut", "winked"], a: 0 },
+        { q: "59. We must _____ the line somewhere.", o: ["draw", "pull", "take", "make"], a: 0 },
+        { q: "60. He _____ the beans about the surprise party.", o: ["spilled", "poured", "dropped", "threw"], a: 0 },
+
+        // --- SECTION 4: British Idioms & Phrasal Verbs (Obscure) ---
+        { q: "61. That argument cuts no _____ with me.", o: ["ice", "dice", "bread", "water"], a: 0 },
+        { q: "62. The party was a damp _____.", o: ["squib", "squid", "rag", "firework"], a: 0 },
+        { q: "63. Stop _____ about the bush and get to the point.", o: ["beating", "hitting", "running", "walking"], a: 0 },
+        { q: "64. He's got a chip on his _____.", o: ["shoulder", "head", "back", "arm"], a: 0 },
+        { q: "65. It's raining _____.", o: ["cats and dogs", "pigs and cows", "birds and bees", "fish and chips"], a: 0 },
+        { q: "66. Don't throw the baby out with the _____.", o: ["bathwater", "washwater", "soapwater", "cleanwater"], a: 0 },
+        { q: "67. He's a few sandwiches short of a _____.", o: ["picnic", "lunch", "basket", "party"], a: 0 },
+        { q: "68. That's a different kettle of _____.", o: ["fish", "soup", "tea", "corn"], a: 0 },
+        { q: "69. He's sitting on the _____.", o: ["fence", "wall", "gate", "hedge"], a: 0 },
+        { q: "70. She sent him to _____.", o: ["Coventry", "London", "prison", "school"], a: 0 },
+        { q: "71. He is mostly harmless, his bark is worse than his _____.", o: ["bite", "sting", "kick", "punch"], a: 0 },
+        { q: "72. I can't put my _____ on what is wrong.", o: ["finger", "hand", "thumb", "toe"], a: 0 },
+        { q: "73. He really put his _____ in it that time.", o: ["foot", "leg", "shoe", "boot"], a: 0 },
+        { q: "74. Let's play it by _____.", o: ["ear", "eye", "hand", "mouth"], a: 0 },
+        { q: "75. He decided to _____ the bucket. (Euphemism)", o: ["kick", "hit", "strike", "beat"], a: 0 },
+        { q: "76. It cost an arm and a _____.", o: ["leg", "foot", "hand", "head"], a: 0 },
+        { q: "77. He's strictly above _____.", o: ["board", "table", "ground", "water"], a: 0 },
+        { q: "78. Don't count your chickens before they _____.", o: ["hatch", "lay", "break", "crack"], a: 0 },
+        { q: "79. Curiosity _____ the cat.", o: ["killed", "hurt", "bit", "chased"], a: 0 },
+        { q: "80. When in Rome, do as the Romans _____.", o: ["do", "did", "does", "done"], a: 0 },
+
+        // --- SECTION 5: Confusing Words, Spelling & Structural Nuance ---
+        { q: "81. The army began a complex _____.", o: ["manoeuvre", "maneuver", "manovre", "manouvre"], a: 0 }, // UK Spelling
+        { q: "82. She had a severe bout of _____.", o: ["diarrhoea", "diarrhea", "diorrhea", "diarhoea"], a: 0 }, // UK Spelling
+        { q: "83. He paid me a nice _____.", o: ["compliment", "complement", "complament", "complemant"], a: 0 },
+        { q: "84. The wine _____ the meal perfectly.", o: ["complements", "compliments", "complete", "completes"], a: 0 },
+        { q: "85. He is totally _____ in politics. (meaning: doesn't care)", o: ["uninterested", "disinterested", "uninteresting", "disinteresting"], a: 0 },
+        { q: "86. A judge must be _____ in the case. (meaning: impartial)", o: ["disinterested", "uninterested", "impartialed", "unbiasedly"], a: 0 },
+        { q: "87. I _____ that you are not happy with the result. (deduce)", o: ["infer", "imply", "insinuate", "indicate"], a: 0 },
+        { q: "88. Are you _____ that I am stupid? (suggest)", o: ["implying", "inferring", "impelling", "inflicting"], a: 0 },
+        { q: "89. The data _____ the hypothesis.", o: ["refutes", "refuses", "rejects", "rebukes"], a: 0 },
+        { q: "90. He was _____ of the crime.", o: ["acquitted", "quit", "quieted", "quitted"], a: 0 },
+        { q: "91. The committee is _____ of twelve members.", o: ["comprised", "composed", "consisted", "contained"], a: 1 }, // Comprised of is generally considered incorrect in strict grammar, though common. Composed of is safe.
+        { q: "92. The book _____ twelve chapters.", o: ["comprises", "composes", "consists", "includes of"], a: 0 },
+        { q: "93. This is _____ different to what I expected.", o: ["altogether", "all together", "all-together", "alltogether"], a: 0 },
+        { q: "94. They gathered _____ in the hall.", o: ["all together", "altogether", "all-together", "alltogether"], a: 0 },
+        { q: "95. He has _____ money than me.", o: ["less", "fewer", "lesser", "least"], a: 0 },
+        { q: "96. He has _____ coins than me.", o: ["fewer", "less", "lesser", "least"], a: 0 },
+        { q: "97. It was an _____ occasion.", o: ["historic", "historical", "history", "histrionic"], a: 0 }, // 'An' historic is traditional UK, though 'a' is common. Historic = important.
+        { q: "98. I read a _____ novel.", o: ["historical", "historic", "history", "historian"], a: 0 }, // Historical = relating to history.
+        { q: "99. The government's _____ policy.", o: ["economic", "economical", "economy", "economist"], a: 0 },
+        { q: "100. This car is very _____. (cheap to run)", o: ["economical", "economic", "economy", "economist"], a: 0 }
+    ];
+
+    function renderQuiz() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
+        
+        questions.forEach((q, index) => {
+            const block = document.createElement('div');
+            block.className = 'question-block';
+            block.id = `block-${index}`;
+            
+            // Randomize options for display only, track the correct one
+            // Actually, to keep the logic simple for this large set, we kept answers as indices.
+            // But visually, let's keep them in order A, B, C, D.
+            
+            let optionsHtml = '';
+            q.o.forEach((opt, i) => {
+                optionsHtml += `
+                    <label id="lbl-${index}-${i}">
+                        <input type="radio" name="q${index}" value="${i}"> 
+                        ${String.fromCharCode(65 + i)}) ${opt}
+                    </label>
+                `;
+            });
+
+            block.innerHTML = `
+                <div class="question-text">${index + 1}. ${q.q}</div>
+                <div class="options">${optionsHtml}</div>
+                <div class="feedback" id="feed-${index}"></div>
+            `;
+            container.appendChild(block);
+        });
+    }
+
+    function submitQuiz() {
+        let score = 0;
+        const total = questions.length;
+        const keyDiv = document.getElementById('final-key');
+        let keyHtml = "<h3>Answer Key Reference:</h3><ul>";
+
+        questions.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const feedback = document.getElementById(`feed-${index}`);
+            const block = document.getElementById(`block-${index}`);
+            
+            const correctText = q.o[q.a];
+            keyHtml += `<li>${index + 1}. ${correctText}</li>`;
+
+            if (selected) {
+                const val = parseInt(selected.value);
+                if (val === q.a) {
+                    score++;
+                    block.style.borderLeftColor = "#00693e"; // Green
+                    feedback.innerHTML = `<span class="correct">✓ Correct</span>`;
+                    document.getElementById(`lbl-${index}-${val}`).style.backgroundColor = "#d4edda";
+                } else {
+                    block.style.borderLeftColor = "#dc3545"; // Red
+                    feedback.innerHTML = `<span class="wrong">✗ Your answer: ${q.o[val]}</span> <br> <span class="correct-ref">Correct: ${correctText}</span>`;
+                    document.getElementById(`lbl-${index}-${val}`).style.backgroundColor = "#f8d7da";
+                }
+            } else {
+                block.style.borderLeftColor = "#ffc107"; // Yellow
+                feedback.innerHTML = `<span class="correct-ref">Missed. Correct: ${correctText}</span>`;
+            }
+        });
+
+        keyHtml += "</ul>";
+        keyDiv.innerHTML = keyHtml;
+        keyDiv.style.display = "block";
+
+        const results = document.getElementById('results');
+        results.style.display = "block";
+        
+        let rank = "";
+        const pct = (score/total)*100;
+        if(pct >= 90) rank = "Native / Mastery (C2)";
+        else if(pct >= 75) rank = "Advanced (C1)";
+        else if(pct >= 60) rank = "Upper Intermediate (B2)";
+        else rank = "Needs Revision";
+
+        results.innerHTML = `
+            <h2 style="text-align:center; color:#222;">Final Score: ${score} / ${total}</h2>
+            <h3 style="text-align:center; color:#00693e;">Level: ${rank}</h3>
+        `;
+        
+        window.scrollTo(0,0);
+    }
+
+    renderQuiz();
+</script>
+
+</body>
+</html>
